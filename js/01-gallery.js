@@ -31,16 +31,45 @@ galleryEl.insertAdjacentHTML("beforeend", renderListGalleryEl);
 
 galleryEl.addEventListener("click", openModalGalleryWindow);
 
+// function openModalGalleryWindow(event) {
+//   event.preventDefault();
+//   if (!event.target.classList.contains("gallery__image")) {
+//     return;
+//   }
+//   const instance = basicLightbox.create(`
+//     <img src="${event.target.dataset.source}" alt="${event.target.getAttribute(
+//     "alt"
+//   )}" >
+//     `);
+
+//   instance.show();
+// }
+
 function openModalGalleryWindow(event) {
   event.preventDefault();
   if (!event.target.classList.contains("gallery__image")) {
     return;
   }
-  const instance = basicLightbox.create(`
+  const instance = basicLightbox.create(
+    `
     <img src="${event.target.dataset.source}" alt="${event.target.getAttribute(
-    "alt"
-  )}" >
-    `);
+      "alt"
+    )}" >
+    `,
+    {
+      onShow: () => {
+        window.addEventListener("keydown", CloseEsc);
+      },
+    }
+  );
 
   instance.show();
+
+  function CloseEsc(event) {
+    const ESC_KEY_CODE = "Escape";
+    if (event.code === ESC_KEY_CODE) {
+      instance.close();
+      window.removeEventListener("keydown", CloseEsc);
+    }
+  }
 }
